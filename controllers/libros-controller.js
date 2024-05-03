@@ -117,12 +117,12 @@ function deleteLibro(req, res) {
     });
 }
 
-function findLibrobyID(req, res) {
-    console.log("Obteniendo el libro por id...");
-    const libro = req.params.id
+function findLibrobyISBN(req, res) {
+    console.log("Obteniendo el libro por isbn...");
+    const libro = req.params.isbn
     console.log(req.body);
 
-    Libro.find({_id : libro}).then( (result) => {
+    Libro.find({isbn : libro}).then( (result) => {
         
         if (!result) {
             return res.status(400).json({
@@ -155,5 +155,5 @@ module.exports = {
     updateLibro,
     findAllLibros,
     deleteLibro,
-    findLibrobyID
+    findLibrobyISBN
 }
