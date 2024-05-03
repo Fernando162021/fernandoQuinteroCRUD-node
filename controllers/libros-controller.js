@@ -51,7 +51,6 @@ function updateLibro(req, res) {
 }
 
 
-// ? FIND ALL
 function findAllLibros(req, res) {
     console.log("Obteniendo todos los libros...");
     console.log(req.body);
@@ -84,10 +83,10 @@ function findAllLibros(req, res) {
     });
 }
 
-// ? FIND ALL
+
 function deleteLibro(req, res) {
     console.log("Eliminando un libro...");
-    const libroId = req.params.id; // id de de la tarea a actualizar
+    const libroId = req.params.id;
    
 
     Libro.deleteOne({ _id: libroId }).then( (result) => {
