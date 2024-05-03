@@ -1,34 +1,60 @@
 const Libro = require("../models/libro");
 
-//CRUD
-//Create
 function createLibro(req, res) {
     console.log("Creando un libro...");
     console.log(req.body);
-    let libro = new Libro({
-        nombre: req.body.nombre,
-        isbn: req.body.isbn,
-        autor: req.body.autor,
-    });
-    libro.save().then(result => { 
-        console.log(result) 
-        return res.status(200).json({
-            error: false,
-            message: "OK",
-            code: 20,
-            data: result,
-        })
-    })
 
-    
+    Libro.findOne({ isbn: req.body.isbn })
+        .then(existingLibro => {
+            if (existingLibro) {
+                return res.status(400).json({
+                    error: true,
+                    message: "El ISBN ya está en uso",
+                    code: 400,
+                });
+            }
+
+            let libro = new Libro({
+                nombre: req.body.nombre,
+                isbn: req.body.isbn,
+                autor: req.body.autor,
+            });
+
+            libro.save().then(result => { 
+                console.log("Libro creado:", result);
+                return res.status(200).json({
+                    error: false,
+                    message: "OK",
+                    code: 20,
+                    data: result,
+                });
+            }).catch(error => {
+                console.error("Error al guardar el libro:", error);
+                return res.status(500).json({
+                    error: true,
+                    message: "Error al guardar el libro",
+                    code: 500,
+                });
+            });
+        })
+        .catch(err => {
+            console.error("Error al buscar el libro:", err);
+            return res.status(500).json({
+                error: true,
+                message: "Error interno del servidor al buscar el libro",
+                code: 500,
+                errorDetails: err,
+            });
+        });
 }
+
 
 function updateLibro(req, res) {
 
     console.log("Actualizando libro...");
-    const libroId = req.params.id; // id de de la tarea a actualizar
+    const libroId = req.params.id;
     const newLibro = req.body;
-    // Body call
+
     Libro.findByIdAndUpdate(libroId, newLibro, { new: true }).then((result) => {
         
         return res.status(200).json({
